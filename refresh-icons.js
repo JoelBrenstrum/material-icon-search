@@ -12,7 +12,7 @@ request(URL, { json: true }, (err, res, body) => {
 
 
 
-  fs.writeFile("./data/materialIcons.json", JSON.stringify(body.icons, null, 4), function(err) {
+  fs.writeFile("./src/data/materialIcons.json", JSON.stringify(body.icons, null, 4), function(err) {
       if(err) {
           return console.log(err);
       }

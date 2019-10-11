@@ -1,7 +1,7 @@
 //merges in with the default search tags
 import materialIconsJson from './materialIcons.json'
 import { customTags } from './customSearchIndex'
-type Icon = {
+export type IconType = {
     name: string,
     version: number,
     unsupported_families: Array<string>,
@@ -9,20 +9,20 @@ type Icon = {
     tags: Array<string>
 }
 
-
-function mergeIcons<T extends Icon>(array: Array<T>, tagsToMerge: typeof customTags) {
-    const normalizedObject: any = {}
+function mergeIcons(array: Array<IconType>, tagsToMerge: typeof customTags) {
+    const newArray: any = [];
     for (let i = 0; i < array.length; i++) {
         const key = array[i]['name']
         const tagsArray = tagsToMerge[key] ? tagsToMerge[key].tags || [] : [];
+        const categoriesArray = tagsToMerge[key] ? tagsToMerge[key].categories || [] : [];
 
-        normalizedObject[key] = {
+        newArray.push({
             ...array[i],
-
-            tags: [...array[i].tags, ...tagsArray]
-        }
+            tags: [...array[i].tags, ...tagsArray],
+            categories: [...array[i].categories, ...categoriesArray]
+        } as IconType);
     }
-    return normalizedObject as { [key: string]: T }
+    return newArray as Array<IconType>
 }
 
 export const icons = mergeIcons(materialIconsJson, customTags);
