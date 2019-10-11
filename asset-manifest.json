@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/material-icon-search/static/css/main.b100e6da.chunk.css",
+    "main.js": "/material-icon-search/static/js/main.bbe13ad3.chunk.js",
+    "main.js.map": "/material-icon-search/static/js/main.bbe13ad3.chunk.js.map",
+    "runtime-main.js": "/material-icon-search/static/js/runtime-main.e82fb41b.js",
+    "runtime-main.js.map": "/material-icon-search/static/js/runtime-main.e82fb41b.js.map",
+    "static/js/2.87963fd4.chunk.js": "/material-icon-search/static/js/2.87963fd4.chunk.js",
+    "static/js/2.87963fd4.chunk.js.map": "/material-icon-search/static/js/2.87963fd4.chunk.js.map",
+    "index.html": "/material-icon-search/index.html",
+    "precache-manifest.330b870a35c0b5e36a5c3a8daab4b289.js": "/material-icon-search/precache-manifest.330b870a35c0b5e36a5c3a8daab4b289.js",
+    "service-worker.js": "/material-icon-search/service-worker.js",
+    "static/css/main.b100e6da.chunk.css.map": "/material-icon-search/static/css/main.b100e6da.chunk.css.map",
+    "static/media/logo.svg": "/material-icon-search/static/media/logo.25bf045c.svg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.e82fb41b.js",
+    "static/js/2.87963fd4.chunk.js",
+    "static/css/main.b100e6da.chunk.css",
+    "static/js/main.bbe13ad3.chunk.js"
+  ]
+}
