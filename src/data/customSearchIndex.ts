@@ -11,6 +11,20 @@ export const customTags: { [index: string]: Tag } = {
             "more"
         ]
     },
+    whatshot: {
+        categories: [],
+        tags: [
+            "lit",
+            "flame"
+        ]
+    },
+
+    wc: {
+        categories: [],
+        tags: [
+            "toilet"
+        ]
+    },
 
 };
 
