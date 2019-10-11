@@ -4,12 +4,15 @@
     "homepage": "http://joelbrenstrum.github.io/material-icon-search",
     "private": true,
     "dependencies": {
+        "@material-ui/core": "^4.5.0",
+        "@material-ui/styles": "^4.5.0",
         "@types/jest": "24.0.18",
         "@types/node": "12.7.12",
         "@types/react": "16.9.5",
         "@types/react-dom": "16.9.1",
         "react": "^16.10.2",
         "react-dom": "^16.10.2",
+        "react-jss": "^10.0.0",
         "react-scripts": "3.2.0",
         "typescript": "3.6.4"
     },
@@ -19,7 +22,8 @@
         "start": "react-scripts start",
         "build": "react-scripts build",
         "test": "react-scripts test",
-        "eject": "react-scripts eject"
+        "eject": "react-scripts eject",
+        "update-icons": "node data/refresh-icons"
     },
     "eslintConfig": {
         "extends": "react-app"
