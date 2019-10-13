@@ -7,12 +7,9 @@ import Search from './search/Search';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
-    background: theme.palette.secondary.main,
-    border: 0,
+    // background: theme.palette.secondary.main,
     fontSize: 16,
-    borderRadius: 3,
-    boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)',
-    color: 'white',
+    // color: 'white',
     height: '100%',
   },
 }));
@@ -24,7 +21,7 @@ const App: React.FC = () => {
     <ThemeProvider theme={theme}>
       <div className={classes.root}>
         <Search />
-      </div>  
+      </div>
     </ThemeProvider>
 
   );

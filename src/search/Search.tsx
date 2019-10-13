@@ -9,6 +9,10 @@ import { fade } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
+        body: {
+            padding: 10,
+            height: '100%'
+        },
         grow: {
             flexGrow: 1,
         },
@@ -83,8 +87,10 @@ const Search: React.FC = () => {
                     </div>
                 </Toolbar>
             </AppBar>
-            <SearchResult results={searchResult as any}
-            />
+            <div className={classes.body}>
+                <SearchResult results={searchResult as any}
+                />
+            </div>
         </>
     );
 }

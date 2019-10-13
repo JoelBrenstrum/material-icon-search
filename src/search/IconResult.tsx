@@ -3,12 +3,18 @@ import { ThemeProvider, makeStyles } from '@material-ui/styles';
 import { Theme, theme } from '../theme';
 import { IconType } from '../data/iconData';
 import Icon from '@material-ui/core/Icon';
+import { CardContent, Card, Typography } from '@material-ui/core';
 
 
 const useStyles = makeStyles((theme: Theme) => ({
-  root: {
-    
+  card: {
+    margin: 4
   },
+  cardContent: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  }
 }));
 
 interface IconResultProps {
@@ -16,10 +22,18 @@ interface IconResultProps {
 }
 
 const IconResult: React.FC<IconResultProps> = (props: IconResultProps) => {
-  const {icon} = props;
+  const { icon } = props;
   const classes = useStyles();
   return (
-      <Icon>{icon.name}</Icon>
+    <Card className={classes.card}>
+      <CardContent className={classes.cardContent}>
+        <Icon fontSize="large">{icon.name}</Icon>
+        <Typography>
+          {icon.name}
+        </Typography>
+      </CardContent>
+    </Card>
+
   );
 }
 

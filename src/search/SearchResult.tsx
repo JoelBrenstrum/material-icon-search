@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ThemeProvider, makeStyles } from '@material-ui/styles';
 import { Theme, theme } from '../theme';
-import { TextField } from '@material-ui/core';
+import { TextField, Grid, Typography } from '@material-ui/core';
 import IconResult from './IconResult';
 import { IconType } from '../data/iconData'
 const useStyles = makeStyles((theme: Theme) => ({
@@ -33,23 +33,28 @@ const SearchResult: React.FC<SearchResultProps> = (props: SearchResultProps) => 
   const groups = group(results);
   const classes = useStyles();
   return (
-    <div className={classes.root}>
+    <Grid container>
       {Object.keys(groups).map(g => (
-          <>
-          {g}
-          {groups[g].map(r => (
-            <>
-              <IconResult icon={r}
-              //   onChange={setSearchTerm}
-              />
-            </>
-          ))}
-          </>
-  )
+        <>
+          <Grid>
+            <Typography variant='h5'>
+              {g}
+            </Typography>
+          </Grid>
+          <Grid container>
+            {groups[g].map(r => (
+              <Grid>
+                <IconResult icon={r}
+                />
+              </Grid>
+            ))}
+          </Grid>
+        </>
+      )
       )}
 
 
-    </div>
+    </Grid>
 
   );
 }
