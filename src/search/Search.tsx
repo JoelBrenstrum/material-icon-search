@@ -7,6 +7,7 @@ import SearchResult from './SearchResult';
 import { jssearch as search } from './searchEngine/searchEngine'
 import { fade } from '@material-ui/core/styles';
 import { icons } from '../data/iconData';
+import debounce from 'debounce'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -64,6 +65,9 @@ const useStyles = makeStyles((theme: Theme) =>
 const Search: React.FC = () => {
     const classes = useStyles();
     const [searchTerm, setSearchTerm] = useState('');
+    const debounced = debounce((v) => {
+        setSearchTerm(v)
+    }, 300);
     const searchResult = searchTerm ? search.search(searchTerm) : icons;
     return (
         <>
@@ -77,7 +81,7 @@ const Search: React.FC = () => {
                             <Icon>search</Icon>
                         </div>
                         <InputBase
-                            onChange={(e) => setSearchTerm(e.target.value)}
+                            onChange={(e) => debounced(e.target.value)}
                             placeholder="Search…"
                             classes={{
                                 root: classes.inputRoot,
