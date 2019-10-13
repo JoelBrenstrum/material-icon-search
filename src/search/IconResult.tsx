@@ -28,7 +28,7 @@ const IconResult: React.FC<IconResultProps> = (props: IconResultProps) => {
     <Card className={classes.card}>
       <CardContent className={classes.cardContent}>
         <Icon fontSize="large">{icon.name}</Icon>
-        <Typography>
+        <Typography variant='caption'>
           {icon.name}
         </Typography>
       </CardContent>

@@ -6,6 +6,7 @@ import SearchBar from './SearchBar';
 import SearchResult from './SearchResult';
 import { jssearch as search } from './searchEngine/searchEngine'
 import { fade } from '@material-ui/core/styles';
+import { icons } from '../data/iconData';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -63,7 +64,7 @@ const useStyles = makeStyles((theme: Theme) =>
 const Search: React.FC = () => {
     const classes = useStyles();
     const [searchTerm, setSearchTerm] = useState('');
-    const searchResult = search.search(searchTerm);
+    const searchResult = searchTerm ? search.search(searchTerm) : icons;
     return (
         <>
             <AppBar position="static">

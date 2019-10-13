@@ -35,7 +35,7 @@ const SearchResult: React.FC<SearchResultProps> = (props: SearchResultProps) => 
   return (
     <Grid container>
       {Object.keys(groups).map(g => (
-        <>
+        <React.Fragment key={g}>
           <Grid>
             <Typography variant='h5'>
               {g}
@@ -43,13 +43,13 @@ const SearchResult: React.FC<SearchResultProps> = (props: SearchResultProps) => 
           </Grid>
           <Grid container>
             {groups[g].map(r => (
-              <Grid>
+              <Grid key={r.name}>
                 <IconResult icon={r}
                 />
               </Grid>
             ))}
           </Grid>
-        </>
+        </ React.Fragment >
       )
       )}
 
