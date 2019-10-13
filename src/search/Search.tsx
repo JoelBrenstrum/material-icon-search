@@ -62,7 +62,7 @@ const useStyles = makeStyles((theme: Theme) =>
         },
     }),
 );
-const maximumScore = 3000;
+const scoreThreshold = 800;
 const Search: React.FC = () => {
     const classes = useStyles();
     const [searchString, setSearch] = useState('');
@@ -86,7 +86,7 @@ const Search: React.FC = () => {
             if (body.length > 0) {
                 const words: typeof body = [];
                 body.forEach(w => {
-                    if (w.score <= maximumScore) words.push(w);
+                    if (w.score >= scoreThreshold) words.push(w);
                 })
                 setSearchTerms(`${value}, ${words.map(m => m.word).join(', ')}`);
             } else {
