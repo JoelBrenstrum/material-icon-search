@@ -13,7 +13,8 @@
         "resolveJsonModule": true,
         "isolatedModules": true,
         "noEmit": true,
+        "noImplicitAny": false,
         "jsx": "react"
     },
-    "include": ["src", "data"]
+    "include": ["src", "data", "refresh-icons.js"]
 }

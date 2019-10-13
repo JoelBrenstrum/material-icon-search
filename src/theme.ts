@@ -1,22 +1,19 @@
 import { createMuiTheme } from '@material-ui/core';
 
 const palette = {
-    // primary: {
-    //   main: primary.main,
-    //   light: primary.light,
-    //   contrastText: primary.contrastText,
-    // },
-    // secondary: {
-    //   main: secondary.main,
-    //   light: secondary.light,
-    //   contrastText: secondary.contrastText,
-    // },
-    // error: {
-    //   main: error.main,
-    //   light: error.light,
-    //   contrastText: error.contrastText,
-    // },
-    // base,
+    primary: {
+        main: '#1b5e20',
+        light: '#4c8c4a',
+        dark: '#003300',
+        contrastText: '#ffffff',
+
+    },
+    secondary: {
+        main: '#a5d6a7',
+        light: '#d7ffd9',
+        dark: '#75a478',
+        contrastText: '#000000',
+    },
 };
 
 export const theme = createMuiTheme({

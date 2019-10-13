@@ -18,7 +18,7 @@ function mergeIcons(array: Array<IconType>, tagsToMerge: typeof customTags) {
 
         newArray.push({
             ...array[i],
-            tags: [...array[i].tags, ...tagsArray],
+            tags: [...array[i].tags, ...tagsArray, ...array[i].name.split('_')],
             categories: [...array[i].categories, ...categoriesArray]
         } as IconType);
     }
