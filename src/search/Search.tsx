@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ThemeProvider, makeStyles, createStyles } from '@material-ui/styles';
 import { Theme, theme } from '../theme';
-import { TextField, AppBar, Toolbar, IconButton, Typography, InputBase, Icon } from '@material-ui/core';
+import { TextField, AppBar, Toolbar, IconButton, Typography, InputBase, Icon, Checkbox, FormControlLabel, CircularProgress } from '@material-ui/core';
 import SearchBar from './SearchBar';
 import SearchResult from './SearchResult';
 import { jssearch as search } from './searchEngine/searchEngine'
 import { fade } from '@material-ui/core/styles';
-import { icons } from '../data/iconData';
+import { icons, IconType } from '../data/iconData';
 import debounce from 'debounce'
+import uuid from 'uuid/v4'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -61,14 +62,61 @@ const useStyles = makeStyles((theme: Theme) =>
         },
     }),
 );
-
+const maximumScore = 3000;
 const Search: React.FC = () => {
     const classes = useStyles();
-    const [searchTerm, setSearchTerm] = useState('');
-    const debounced = debounce((v) => {
-        setSearchTerm(v)
+    const [searchString, setSearch] = useState('');
+    const [searchTerms, setSearchTerms] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [synonymize, setSynonymize] = useState(true);
+
+    useEffect(() => {
+        debounced(searchString);
+    }, [synonymize]);
+    let loadingId = ''
+    const synonymizeWord = (value) => {
+        const localUuid = uuid();
+        loadingId = localUuid;
+        setLoading(true);
+        fetch(`https://api.datamuse.com/words?rel_syn=${value}&max=10`).then(async (res) => {
+            if (loadingId != localUuid) {
+                return;
+            }
+            let body: Array<{ word: string, score: number }> = await res.json();
+            if (body.length > 0) {
+                const words: typeof body = [];
+                body.forEach(w => {
+                    if (w.score <= maximumScore) words.push(w);
+                })
+                setSearchTerms(`${value}, ${words.map(m => m.word).join(', ')}`);
+            } else {
+                setSearchTerms(value)
+            }
+        }).finally(() => {
+            if (loadingId == localUuid) {
+                setLoading(false);
+            }
+        })
+    }
+    const debounced = debounce(async (v) => {
+        setSearch(v);
+        if (synonymize) {
+            synonymizeWord(v);
+        } else {
+            setSearchTerms(v)
+        }
     }, 300);
-    const searchResult = searchTerm ? search.search(searchTerm) : icons;
+
+
+    let searchResult: Set<IconType> = new Set<IconType>();
+    if (!searchTerms) {
+        searchResult = new Set<IconType>(icons);
+    } else {
+        const splitSearchTerms = searchTerms.split(',');
+        for (var i = 0, length = splitSearchTerms.length; i < length; i++) {
+            searchResult = new Set<IconType>([...Array.from(searchResult), ...(search.search(splitSearchTerms[i]) as Array<IconType>)]);
+        }
+    }
     return (
         <>
             <AppBar position="static">
@@ -90,10 +138,23 @@ const Search: React.FC = () => {
                             inputProps={{ 'aria-label': 'search' }}
                         />
                     </div>
+                    <FormControlLabel
+                        control={
+                            <Checkbox
+                                checked={synonymize}
+                                onChange={(value) => { setSynonymize(!synonymize) }} />
+                        }
+                        label="Synonymize"
+                    />
+
                 </Toolbar>
             </AppBar>
             <div className={classes.body}>
-                <SearchResult results={searchResult as any}
+                {loading && <CircularProgress />}
+                <Typography variant="h6" noWrap>
+                    {searchTerms}
+                </Typography>
+                <SearchResult results={Array.from(searchResult)}
                 />
             </div>
         </>
