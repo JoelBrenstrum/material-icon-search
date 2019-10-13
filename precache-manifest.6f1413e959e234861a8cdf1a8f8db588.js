@@ -1,10 +1,10 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "3ff1eeee640f3f9f843db3405869a733",
+    "revision": "fa59b3100cbf796d85115a13f748a302",
     "url": "/material-icon-search/index.html"
   },
   {
-    "revision": "124c5e5db9e85da0dbcd",
+    "revision": "87c4158a16b9d27b6f5e",
     "url": "/material-icon-search/static/css/main.8b60bc61.chunk.css"
   },
   {
@@ -12,8 +12,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/material-icon-search/static/js/2.6ff31bdb.chunk.js"
   },
   {
-    "revision": "124c5e5db9e85da0dbcd",
-    "url": "/material-icon-search/static/js/main.04b1024c.chunk.js"
+    "revision": "87c4158a16b9d27b6f5e",
+    "url": "/material-icon-search/static/js/main.52570914.chunk.js"
   },
   {
     "revision": "a1d865100b7dfbdb559e",
