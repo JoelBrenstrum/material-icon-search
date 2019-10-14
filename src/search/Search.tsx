@@ -5,6 +5,7 @@ import { TextField, AppBar, Toolbar, IconButton, Typography, InputBase, Icon, Ch
 import SearchBar from './SearchBar';
 import SearchResult from './SearchResult';
 import { jssearch as search } from './searchEngine/searchEngine'
+import {googledictionary as API} from './api/api';
 import { fade } from '@material-ui/core/styles';
 import { icons, IconType } from '../data/iconData';
 import debounce from 'debounce'
@@ -62,11 +63,11 @@ const useStyles = makeStyles((theme: Theme) =>
         },
     }),
 );
-const scoreThreshold = 800;
+
 const Search: React.FC = () => {
     const classes = useStyles();
     const [searchString, setSearch] = useState('');
-    const [searchTerms, setSearchTerms] = useState('');
+    const [searchTerms, setSearchTerms] = useState(['']);
     const [loading, setLoading] = useState(false);
     const [synonymize, setSynonymize] = useState(true);
 
@@ -74,47 +75,41 @@ const Search: React.FC = () => {
         debounced(searchString);
     }, [synonymize]);
     let loadingId = ''
-    const synonymizeWord = (value) => {
+    const synonymizeWord = (value: string) => {
+        if(!value){
+            setSearchTerms([value]);
+            return;
+        }
         const localUuid = uuid();
         loadingId = localUuid;
         setLoading(true);
-        fetch(`https://api.datamuse.com/words?rel_syn=${value}&max=10`).then(async (res) => {
+        API.getSynonym(value, localUuid, {noun: true, adjective: true, verb: true}).then((res) => {
             if (loadingId != localUuid) {
                 return;
             }
-            let body: Array<{ word: string, score: number }> = await res.json();
-            if (body.length > 0) {
-                const words: typeof body = [];
-                body.forEach(w => {
-                    if (w.score >= scoreThreshold) words.push(w);
-                })
-                setSearchTerms(`${value}, ${words.map(m => m.word).join(', ')}`);
-            } else {
-                setSearchTerms(value)
-            }
+            setSearchTerms(res.words);
         }).finally(() => {
             if (loadingId == localUuid) {
                 setLoading(false);
             }
-        })
+        });
     }
-    const debounced = debounce(async (v) => {
+    const debounced = debounce(async (v: string) => {
         setSearch(v);
         if (synonymize) {
             synonymizeWord(v);
         } else {
-            setSearchTerms(v)
+            setSearchTerms([v])
         }
     }, 300);
 
 
     let searchResult: Set<IconType> = new Set<IconType>();
-    if (!searchTerms) {
+    if (!searchTerms || searchTerms.length <= 1) {
         searchResult = new Set<IconType>(icons);
     } else {
-        const splitSearchTerms = searchTerms.split(',');
-        for (var i = 0, length = splitSearchTerms.length; i < length; i++) {
-            searchResult = new Set<IconType>([...Array.from(searchResult), ...(search.search(splitSearchTerms[i]) as Array<IconType>)]);
+        for (var i = 0, length = searchTerms.length; i < length; i++) {
+            searchResult = new Set<IconType>([...Array.from(searchResult), ...(search.search(searchTerms[i]) as Array<IconType>)]);
         }
     }
     return (
@@ -142,7 +137,7 @@ const Search: React.FC = () => {
                         control={
                             <Checkbox
                                 checked={synonymize}
-                                onChange={(value) => { setSynonymize(!synonymize) }} />
+                                onChange={() => { setSynonymize(!synonymize) }} />
                         }
                         label="Synonymize"
                     />
@@ -152,7 +147,7 @@ const Search: React.FC = () => {
             <div className={classes.body}>
                 {loading && <CircularProgress />}
                 <Typography variant="h6" noWrap>
-                    {searchTerms}
+                    {searchTerms.join(', ')}
                 </Typography>
                 <SearchResult results={Array.from(searchResult)}
                 />

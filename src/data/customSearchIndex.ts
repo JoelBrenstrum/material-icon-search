@@ -5,6 +5,13 @@ export type Tag = {
 }
 
 export const customTags: { [index: string]: Tag } = {
+    emoji_objects: {
+        categories: [],
+        tags: [
+            "light",
+            "bulb"
+        ]
+    },
     add: {
         categories: [],
         tags: [
