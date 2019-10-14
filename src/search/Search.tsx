@@ -105,7 +105,7 @@ const Search: React.FC = () => {
 
 
     let searchResult: Set<IconType> = new Set<IconType>();
-    if (!searchTerms || searchTerms.length <= 1) {
+    if (!searchTerms || searchTerms.length < 1 || (searchTerms.length == 1 && !searchTerms[0])) {
         searchResult = new Set<IconType>(icons);
     } else {
         for (var i = 0, length = searchTerms.length; i < length; i++) {
