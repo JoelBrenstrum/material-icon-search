@@ -5,7 +5,7 @@ import { TextField, AppBar, Toolbar, IconButton, Typography, InputBase, Icon, Ch
 import SearchBar from './SearchBar';
 import SearchResult from './SearchResult';
 import { jssearch as search } from './searchEngine/searchEngine'
-import {googledictionary as API} from './api/api';
+import {getAPI, SearchAPI} from './api/api';
 import { fade } from '@material-ui/core/styles';
 import { icons, IconType } from '../data/iconData';
 import debounce from 'debounce'
@@ -65,6 +65,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const Search: React.FC = () => {
+    const API = getAPI(SearchAPI.googledictionary);
     const classes = useStyles();
     const [searchString, setSearch] = useState('');
     const [searchTerms, setSearchTerms] = useState(['']);
@@ -83,7 +84,7 @@ const Search: React.FC = () => {
         const localUuid = uuid();
         loadingId = localUuid;
         setLoading(true);
-        API.getSynonym(value, localUuid, {noun: true, adjective: true, verb: true}).then((res) => {
+        API.getSynonym(value, localUuid).then((res) => {
             if (loadingId != localUuid) {
                 return;
             }
@@ -145,6 +146,7 @@ const Search: React.FC = () => {
                 </Toolbar>
             </AppBar>
             <div className={classes.body}>
+                {/* render search options */}
                 {loading && <CircularProgress />}
                 <Typography variant="h6" noWrap>
                     {searchTerms.join(', ')}

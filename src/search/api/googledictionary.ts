@@ -1,4 +1,4 @@
-import { APIInterface, ISynonymResult, IOptions, pushArray } from "./api";
+import { APIInterface, ISynonymResult, IOptions, pushArray, SearchAPI } from "./api";
 
 
 interface ISubResult {
@@ -15,35 +15,50 @@ interface IResult {
     }
 }
 
+export interface IGoogleOptions extends IOptions {
+    verb: boolean,
+    noun: boolean,
+    adjective: boolean
+}
+
 interface IResponse extends Array<IResult> { }
 
 class GoogleDictionary implements APIInterface {
-    public getSynonym = async (value: string, requestId: string, options?: IOptions): Promise<ISynonymResult> => {
+    private options: IGoogleOptions = { noun: true, adjective: true, verb: true };
+    apiName = SearchAPI.googledictionary;
+    getOptions = (): IGoogleOptions => {
+        return this.options;
+    }
+    setOptions = (options) => {
+        this.options = options;
+    }
+
+    public getSynonym = async (value: string, requestId: string): Promise<ISynonymResult> => {
         const result: ISynonymResult = { words: [value], requestId: requestId };
         const res = await fetch(`https://mydictionaryapi.appspot.com?define=${value}`);
         const response = <IResponse>await res.json();
         response.forEach(r => {
             let { meaning: { adjective = [], noun = [], verb = [] } } = r;
-            if (!options) {
+            if (!this.options) {
                 return result;
             }
-            if (options.noun) {
+            if (this.options.noun) {
                 noun.forEach(w => {
                     pushArray(result.words, w.synonyms)
                 })
             }
-            if (options.adjective) {
+            if (this.options.adjective) {
                 adjective.forEach(w => {
                     pushArray(result.words, w.synonyms)
                 })
             }
-            if (options.verb) {
+            if (this.options.verb) {
                 verb.forEach(w => {
                     pushArray(result.words, w.synonyms)
                 })
             }
         })
-
+        result.words = result.words.filter(w => !w.includes(' '));
         return result;
     }
 }
