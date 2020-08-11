@@ -20,7 +20,7 @@ interface IResponse extends Array<IResult> { }
 class GoogleDictionary implements APIInterface {
     public getSynonym = async (value: string, requestId: string, options?: IOptions): Promise<ISynonymResult> => {
         const result: ISynonymResult = { words: [value], requestId: requestId };
-        const res = await fetch(`https://mydictionaryapi.appspot.com?define=${value}`);
+        const res = await fetch(`https://api.dictionaryapi.dev/api/v1/entries/en/${value}`);
         const response = <IResponse>await res.json();
         response.forEach(r => {
             let { meaning: { adjective = [], noun = [], verb = [] } } = r;
