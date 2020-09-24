@@ -1,4 +1,7 @@
-import { fuse } from './fuse'
-import { jssearch } from './js-search'
+// import { fuse } from './fuse'
+import { getJSSearch } from './js-search'
 
-export { fuse, jssearch }
+export {
+    // fuse, 
+    getJSSearch
+}

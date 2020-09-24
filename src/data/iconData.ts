@@ -1,6 +1,9 @@
 //merges in with the default search tags
+
 import materialIconsJson from './materialIcons.json'
 import { customTags } from './customSearchIndex'
+const request = require('request');
+
 export type IconType = {
     name: string,
     version: number,
@@ -25,4 +28,37 @@ function mergeIcons(array: Array<IconType>, tagsToMerge: typeof customTags) {
     return newArray as Array<IconType>
 }
 
-export const icons = mergeIcons(materialIconsJson, customTags);
+const URL = 'https://fonts.google.com/metadata/icons';
+
+// read icons from google, dump into json file
+
+
+export const getIcons = async () => {
+    return new Promise<Array<IconType>>(async (resolve, reject) => {
+        let materialIcons;
+        try {
+            const response = await fetch(URL)
+            //, {
+            // method: 'GET', // *GET, POST, PUT, DELETE, etc.
+            // mode: 'no-cors', // no-cors, *cors, same-origin
+            // credentials: 'same-origin', // include, *same-origin, omit
+            // headers: {
+            //   'Content-Type': 'application/json'
+            //   // 'Content-Type': 'application/x-www-form-urlencoded',
+            // },
+            // redirect: 'follow', // manual, *follow, error
+            // referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+            // body: JSON.stringify(data) // body data type must match "Content-Type" header
+            //});
+            // }
+            // request(URL, { json: true }, (err, res, body) => {
+            // if (err) { return console.log(err); }
+            let body = await response.json()
+            if (body.startsWith(')]}\'')) body = body.slice(4);
+            materialIcons = JSON.parse(body)
+        } catch (ex) {
+            materialIcons = materialIconsJson
+        }
+        resolve(mergeIcons(materialIcons, customTags));
+    });
+}

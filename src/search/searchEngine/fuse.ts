@@ -1,4 +1,4 @@
-import { icons } from '../../data/iconData';
+// import { icons } from '../../data/iconData';
 import Fuse from 'fuse.js';
 
 // search.addDocuments(icons);
@@ -22,6 +22,6 @@ var options = {
         weight: 0.5
     }]
 };
-var fuse = new Fuse(icons, options); // "list" is the item array
+// var fuse = new Fuse(icons, options); // "list" is the item array
 
-export { fuse };
+// export { fuse };
