@@ -101,6 +101,7 @@ const Search: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [synonymize, setSynonymize] = useState(true);
     const loadingId = useRef<string>();
+    const searchRef = useRef<string>("");
     const [icons, setIcons] = useState<Array<IconType>>([]);
 
     //should make this a hook
@@ -126,19 +127,22 @@ const Search: React.FC = () => {
             });
     };
 
+    const updateSearch = (v: string) => {
+        setSearch(v);
+        searchRef.current = v;
+    };
     const debounced = useCallback(
-        debounce(async (v: string) => {
-            setSearch(v);
+        debounce(async () => {
             if (synonymize) {
-                synonymizeWord(v);
+                synonymizeWord(searchRef.current);
             } else {
-                setSearchTerms([v]);
+                setSearchTerms([searchRef.current]);
             }
         }, 300),
         [synonymize]
     );
     useEffect(() => {
-        debounced(searchString);
+        debounced();
     }, [debounced, searchString, synonymize]);
     useEffect(() => {
         (async () => {
@@ -146,19 +150,23 @@ const Search: React.FC = () => {
             setLoading(false);
         })();
     }, []);
-    let searchResult: Set<IconType> = new Set<IconType>();
-    if (!searchTerms || searchTerms.length < 1 || (searchTerms.length == 1 && !searchTerms[0])) {
-        searchResult = new Set<IconType>(icons);
-    } else {
-        for (var i = 0, length = searchTerms.length; i < length; i++) {
-            searchResult = new Set<IconType>([
-                ...Array.from(searchResult),
-                ...(search(icons).search(searchTerms[i]) as Array<IconType>),
-            ]);
+    const searchResult = useMemo<Set<IconType>>(() => {
+        let searchResult: Set<IconType> = new Set<IconType>();
+        if (!searchTerms || searchTerms.length < 1 || (searchTerms.length == 1 && !searchTerms[0])) {
+            searchResult = new Set<IconType>(icons);
+        } else {
+            for (var i = 0, length = searchTerms.length; i < length; i++) {
+                searchResult = new Set<IconType>([
+                    ...Array.from(searchResult),
+                    ...(search(icons).search(searchTerms[i]) as Array<IconType>),
+                ]);
+            }
         }
-    }
-    return (
-        <div className={classes.app}>
+        return searchResult;
+    }, [icons, searchTerms]);
+
+    const renderTitleBar = useMemo(
+        () => (
             <AppBar position="static">
                 <Toolbar>
                     <Typography className={classes.title} variant="h6" noWrap>
@@ -169,7 +177,7 @@ const Search: React.FC = () => {
                             <Icon>search</Icon>
                         </div>
                         <InputBase
-                            onChange={(e) => debounced(e.target.value)}
+                            onChange={(e) => updateSearch(e.target.value)}
                             placeholder="Search…"
                             classes={{
                                 root: classes.inputRoot,
@@ -194,11 +202,26 @@ const Search: React.FC = () => {
                     </Typography>
                 </Toolbar>
             </AppBar>
+        ),
+        [
+            classes.title,
+            classes.search,
+            classes.searchIcon,
+            classes.inputRoot,
+            classes.inputInput,
+            synonymize,
+            searchResult.size,
+        ]
+    );
+    const renderSearchResult = useMemo(() => <SearchResult results={Array.from(searchResult)} />, [searchResult]);
+    return (
+        <div className={classes.app}>
+            {renderTitleBar}
             <div className={classes.body}>
                 <Typography variant="h6" noWrap>
                     {searchTerms.join(", ")}
                 </Typography>
-                <SearchResult results={Array.from(searchResult)} />
+                {renderSearchResult}
             </div>
             {loading && (
                 <div className={classes.loadingMask}>
