@@ -25,6 +25,8 @@ import uuid from "uuid/v4";
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         app: {
+            display: "flex",
+            flexDirection: "column",
             height: "100%",
             position: "relative",
             overflow: "hidden",
@@ -32,7 +34,10 @@ const useStyles = makeStyles((theme: Theme) =>
         body: {
             padding: 10,
             overflowY: "scroll",
-            height: "100%",
+            flex: 1,
+        },
+        header: {
+            flex: 0,
         },
         loadingMask: {
             zIndex: 1,
@@ -167,7 +172,7 @@ const Search: React.FC = () => {
 
     const renderTitleBar = useMemo(
         () => (
-            <AppBar position="static">
+            <AppBar position="static" className={classes.header}>
                 <Toolbar>
                     <Typography className={classes.title} variant="h6" noWrap>
                         material-icon-search
@@ -204,6 +209,7 @@ const Search: React.FC = () => {
             </AppBar>
         ),
         [
+            classes.header,
             classes.title,
             classes.search,
             classes.searchIcon,
