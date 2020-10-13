@@ -1,21 +1,21 @@
 {
   "files": {
     "main.css": "/material-icon-search/static/css/main.0d17cae0.chunk.css",
-    "main.js": "/material-icon-search/static/js/main.0dd73a17.chunk.js",
-    "main.js.map": "/material-icon-search/static/js/main.0dd73a17.chunk.js.map",
+    "main.js": "/material-icon-search/static/js/main.3fde7915.chunk.js",
+    "main.js.map": "/material-icon-search/static/js/main.3fde7915.chunk.js.map",
     "runtime-main.js": "/material-icon-search/static/js/runtime-main.e82fb41b.js",
     "runtime-main.js.map": "/material-icon-search/static/js/runtime-main.e82fb41b.js.map",
-    "static/js/2.2f51ea29.chunk.js": "/material-icon-search/static/js/2.2f51ea29.chunk.js",
-    "static/js/2.2f51ea29.chunk.js.map": "/material-icon-search/static/js/2.2f51ea29.chunk.js.map",
+    "static/js/2.d37d35aa.chunk.js": "/material-icon-search/static/js/2.d37d35aa.chunk.js",
+    "static/js/2.d37d35aa.chunk.js.map": "/material-icon-search/static/js/2.d37d35aa.chunk.js.map",
     "index.html": "/material-icon-search/index.html",
-    "precache-manifest.6467d1af65548cc89415e29982ec8ccb.js": "/material-icon-search/precache-manifest.6467d1af65548cc89415e29982ec8ccb.js",
+    "precache-manifest.d06e4be287176a4a80bea47976c219ef.js": "/material-icon-search/precache-manifest.d06e4be287176a4a80bea47976c219ef.js",
     "service-worker.js": "/material-icon-search/service-worker.js",
     "static/css/main.0d17cae0.chunk.css.map": "/material-icon-search/static/css/main.0d17cae0.chunk.css.map"
   },
   "entrypoints": [
     "static/js/runtime-main.e82fb41b.js",
-    "static/js/2.2f51ea29.chunk.js",
+    "static/js/2.d37d35aa.chunk.js",
     "static/css/main.0d17cae0.chunk.css",
-    "static/js/main.0dd73a17.chunk.js"
+    "static/js/main.3fde7915.chunk.js"
   ]
 }
