@@ -12,15 +12,22 @@ import {
     Checkbox,
     FormControlLabel,
     CircularProgress,
+    FormHelperText,
+    Select,
+    FormControl,
+    MenuItem,
+    InputLabel,
 } from "@material-ui/core";
 import SearchBar from "./SearchBar";
 import SearchResult from "./SearchResult";
-import { getJSSearch as search } from "./searchEngine/searchEngine";
+import Engines, { SearchEngines } from "./searchEngine/searchEngines";
 import { googledictionary as API } from "./api/api";
 import { fade } from "@material-ui/core/styles";
 import { getIcons, IconType } from "../data/iconData";
 import debounce from "debounce";
 import uuid from "uuid/v4";
+import SearchProvider, { SearchEngine } from "./searchEngine/SearchProvider";
+import { useSearchProvider } from "./searchEngine/useSearchProvider";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -54,6 +61,8 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         grow: {
             flexGrow: 1,
+            display: "flex",
+            height: 32,
         },
         title: {
             display: "none",
@@ -61,7 +70,7 @@ const useStyles = makeStyles((theme: Theme) =>
                 display: "block",
             },
         },
-        search: {
+        formField: {
             position: "relative",
             borderRadius: theme.shape.borderRadius,
             backgroundColor: fade(theme.palette.common.white, 0.15),
@@ -85,6 +94,10 @@ const useStyles = makeStyles((theme: Theme) =>
             alignItems: "center",
             justifyContent: "center",
         },
+        selectInput: {
+            color: "#fff",
+            marginLeft: theme.spacing(2),
+        },
         inputRoot: {
             color: "inherit",
         },
@@ -105,9 +118,12 @@ const Search: React.FC = () => {
     const [searchTerms, setSearchTerms] = useState([""]);
     const [loading, setLoading] = useState(true);
     const [synonymize, setSynonymize] = useState(true);
+    const [grouped, setGrouped] = useState(true);
     const loadingId = useRef<string>();
-    const searchRef = useRef<string>("");
+    const searchTextRef = useRef<string>("");
+
     const [icons, setIcons] = useState<Array<IconType>>([]);
+    const [search, searchProviderName, setSearchProviderName] = useSearchProvider(icons);
 
     //should make this a hook
     const synonymizeWord = (value: string) => {
@@ -134,92 +150,130 @@ const Search: React.FC = () => {
 
     const updateSearch = (v: string) => {
         setSearch(v);
-        searchRef.current = v;
+        searchTextRef.current = v;
     };
     const debounced = useCallback(
         debounce(async () => {
             if (synonymize) {
-                synonymizeWord(searchRef.current);
+                synonymizeWord(searchTextRef.current);
             } else {
-                setSearchTerms([searchRef.current]);
+                setSearchTerms([searchTextRef.current]);
             }
         }, 300),
         [synonymize]
     );
+
     useEffect(() => {
         debounced();
-    }, [debounced, searchString, synonymize]);
+    }, [debounced, searchString, synonymize, searchProviderName]);
+
     useEffect(() => {
         (async () => {
             setIcons(await getIcons());
             setLoading(false);
         })();
     }, []);
+
     const searchResult = useMemo<Set<IconType>>(() => {
         let searchResult: Set<IconType> = new Set<IconType>();
         if (!searchTerms || searchTerms.length < 1 || (searchTerms.length == 1 && !searchTerms[0])) {
             searchResult = new Set<IconType>(icons);
         } else {
             for (var i = 0, length = searchTerms.length; i < length; i++) {
-                searchResult = new Set<IconType>([
-                    ...Array.from(searchResult),
-                    ...(search(icons).search(searchTerms[i]) as Array<IconType>),
-                ]);
+                searchResult = new Set<IconType>([...Array.from(searchResult), ...(search(searchTerms[i]) || [])]);
             }
         }
         return searchResult;
-    }, [icons, searchTerms]);
+    }, [icons, search, searchTerms]);
 
     const renderTitleBar = useMemo(
         () => (
             <AppBar position="static" className={classes.header}>
                 <Toolbar>
-                    <Typography className={classes.title} variant="h6" noWrap>
-                        material-icon-search
-                    </Typography>
-                    <div className={classes.search}>
-                        <div className={classes.searchIcon}>
-                            <Icon>search</Icon>
+                    <div className={classes.grow}>
+                        <Typography className={classes.title} variant="h6" noWrap>
+                            material-icon-search (total-icons: {searchResult.size})
+                        </Typography>
+                    </div>
+                    <div className={classes.grow}>
+                        <FormControl className={classes.formField}>
+                            <Select
+                                classes={{
+                                    select: classes.selectInput,
+                                }}
+                                disableUnderline
+                                value={searchProviderName}
+                                onChange={(event) => {
+                                    setSearchProviderName(event.target.value as any);
+                                }}
+                            >
+                                {Object.values(SearchEngines).map((k) => (
+                                    <MenuItem value={k}>{k}</MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                        <div className={classes.formField}>
+                            <div className={classes.searchIcon}>
+                                <Icon>search</Icon>
+                            </div>
+                            <InputBase
+                                onChange={(e) => updateSearch(e.target.value)}
+                                placeholder="Search…"
+                                classes={{
+                                    root: classes.inputRoot,
+                                    input: classes.inputInput,
+                                }}
+                                inputProps={{ "aria-label": "search" }}
+                            />
                         </div>
-                        <InputBase
-                            onChange={(e) => updateSearch(e.target.value)}
-                            placeholder="Search…"
-                            classes={{
-                                root: classes.inputRoot,
-                                input: classes.inputInput,
-                            }}
-                            inputProps={{ "aria-label": "search" }}
+                        <FormControlLabel
+                            control={
+                                <Checkbox
+                                    checked={synonymize}
+                                    onChange={() => {
+                                        setSynonymize(!synonymize);
+                                    }}
+                                />
+                            }
+                            label="Synonymize"
+                        />
+                        <FormControlLabel
+                            control={
+                                <Checkbox
+                                    checked={grouped}
+                                    onChange={() => {
+                                        setGrouped(!grouped);
+                                    }}
+                                />
+                            }
+                            label="Group"
                         />
                     </div>
-                    <FormControlLabel
-                        control={
-                            <Checkbox
-                                checked={synonymize}
-                                onChange={() => {
-                                    setSynonymize(!synonymize);
-                                }}
-                            />
-                        }
-                        label="Synonymize"
-                    />
-                    <Typography className={classes.title} variant="h6" noWrap>
-                        total-icons: {searchResult.size}
-                    </Typography>
+
+                    <div className={classes.grow} />
                 </Toolbar>
             </AppBar>
         ),
         [
             classes.header,
+            classes.grow,
             classes.title,
-            classes.search,
+            classes.formField,
+            classes.selectInput,
             classes.searchIcon,
             classes.inputRoot,
             classes.inputInput,
-            synonymize,
             searchResult.size,
+            searchProviderName,
+            synonymize,
+            grouped,
+            setSearchProviderName,
         ]
     );
-    const renderSearchResult = useMemo(() => <SearchResult results={Array.from(searchResult)} />, [searchResult]);
+    const renderSearchResult = useMemo(() => <SearchResult grouped={grouped} results={Array.from(searchResult)} />, [
+        grouped,
+        searchResult,
+    ]);
     return (
         <div className={classes.app}>
             {renderTitleBar}
