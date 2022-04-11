@@ -26,4 +26,3 @@ export const theme = createMuiTheme({
 });
 
 export type Theme = typeof theme;
-
